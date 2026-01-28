@@ -1,32 +1,49 @@
-# `tt`
+# galdi
 
-Home of
+**Ever run a sketchy installer, deploy script, or build tool and wonder "what the heck did this thing just touch on my filesystem?"** Galdi has your back.
 
-## `galdi` - a fast file system metadata snapshot and diff tool
+It's a fast, no-nonsense tool that snapshots your filesystem metadata (paths, sizes, checksums, timestamps) and lets you diff before/after states. Think `git status` but for your entire filesystem—except it actually tells you what changed, where, and how.
 
-Why? Easily check which directories and files changed after an operation.
+## Why use galdi?
 
-### Goals
-- Fast
-- Robust
-- Simple
-- Cross platform
+**1. Debug build systems and installers**
+Your build tool just created 47 files in random locations across your system. Which ones? Where? Galdi shows you exactly what appeared, disappeared, or changed—no more hunting through logs or guessing.
 
-### Example usage:
+**2. Audit deployments and migrations**
+Before you push that deployment script to production, run it on staging with galdi snapshots. You'll know if it's touching files it shouldn't be, missing expected updates, or leaving orphaned config files behind.
+
+**3. Catch filesystem corruption early**
+Regular snapshots with content checksums let you detect bit rot, accidental modifications, or suspicious changes in your important directories. Great for archives, backups, or any data you want to verify hasn't silently changed.
+
+## Design goals
+- **Fast** – Parallel scanning with optimized hashing (Blake3, XXH3, SHA256)
+- **Reliable** – Deterministic output, robust error handling, extensive test coverage
+- **Simple** – Clean JSON output, pipe-friendly, zero config needed
+- **Cross-platform** – Works on Linux, macOS, Windows
+
+## Quick start
 
 ```bash
-# store a snapshot of /some/path in a file for future reference
-galdi snapshot /some/path > snapshot.json
+# Capture a baseline snapshot before running something
+galdi snapshot /some/path > before.json
 
-# Execute something that does something with the /some/path subtree
-./does-stuff-with-files /some/path
+# Run your build, installer, deploy script, whatever
+./mystery-script.sh /some/path
 
-# Compare the snapshot with the current state of the file system.
-galdi diff /some/path snapshot.json > diff.json
+# See exactly what changed
+galdi diff /some/path before.json > changes.json
 
+# Or just print it to your terminal in human-readable format
+galdi diff /some/path before.json --human
 ```
 
-`cat snapshot.json`
+## Output format
+
+Galdi outputs structured JSON that's easy to parse, pipe to other tools, or just read directly. Each snapshot includes complete metadata for every file and directory.
+
+### Snapshot output
+
+`cat before.json`
 ```json
 {
   "$plumbah": {
@@ -593,7 +610,11 @@ galdi diff /some/path snapshot.json > diff.json
 }
 ```
 
-`cat diff.json`
+### Diff output
+
+The diff shows you added, removed, and modified files with a handy summary and detailed change information.
+
+`cat changes.json`
 
 ```json
 {
@@ -824,4 +845,18 @@ galdi diff /some/path snapshot.json > diff.json
 }
 ```
 
-**Do note**, by default `galdi` applies the xxh3_64 hashing algorithm, which is not cryptographic. If a cryptographic algorithm is required, `blake3` is suggested, but `galdi` should support `SHA256` and others as well.
+## Hash algorithms
+
+By default, galdi uses `xxh3_64` for checksums—it's blazing fast but not cryptographically secure. That's fine for detecting accidental changes or bit rot.
+
+If you need cryptographic verification (like detecting malicious tampering), use `blake3` or `sha256`:
+
+```bash
+# Use Blake3 (fast + cryptographically secure)
+galdi snapshot /path --checksum blake3 > snapshot.json
+
+# Use SHA256 (slower but widely trusted)
+galdi snapshot /path --checksum sha256 > snapshot.json
+```
+
+**Performance reference:** On a typical SSD, xxh3_64 can hash several GB/s, blake3 does ~1-2 GB/s, and sha256 is around 500 MB/s. Pick based on your threat model, not on vibes.
