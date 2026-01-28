@@ -55,14 +55,16 @@ pub enum EntryType {
  * Use XXH128 (e.g., content IDs, long‑term storage, cross‑system fingerprints).
  *
  * So, in a loose order of preference for general purpose checksums for galdi purposes:
- * 1. XXH3_64
- * 3. Sha256
+ * 1. XXH3_64 - Fast non-cryptographic 64-bit hash (16 hex chars)
+ * 2. Blake3 - Fast cryptographic 256-bit hash (64 hex chars)
+ * 3. Sha256 - Cryptographic 256-bit hash (64 hex chars)
  */
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum ChecksumAlgorithm {
     XXH3_64,
     Sha256,
+    Blake3,
 }
 
 use std::str::FromStr;
@@ -76,6 +78,7 @@ impl FromStr for ChecksumAlgorithm {
         match s.to_lowercase().as_str() {
             "xxh3_64" => Ok(ChecksumAlgorithm::XXH3_64),
             "sha256" => Ok(ChecksumAlgorithm::Sha256),
+            "blake3" => Ok(ChecksumAlgorithm::Blake3),
             _ => Err(format!("Invalid checksum algorithm: {}", s)),
         }
     }
@@ -137,6 +140,24 @@ mod tests {
         assert_eq!(
             ChecksumAlgorithm::from_str("Sha256").unwrap(),
             ChecksumAlgorithm::Sha256
+        );
+    }
+
+    #[test]
+    fn test_checksum_algorithm_from_str_blake3() {
+        let result = ChecksumAlgorithm::from_str("blake3").unwrap();
+        assert_eq!(result, ChecksumAlgorithm::Blake3);
+    }
+
+    #[test]
+    fn test_checksum_algorithm_blake3_case_insensitive() {
+        assert_eq!(
+            ChecksumAlgorithm::from_str("BLAKE3").unwrap(),
+            ChecksumAlgorithm::Blake3
+        );
+        assert_eq!(
+            ChecksumAlgorithm::from_str("Blake3").unwrap(),
+            ChecksumAlgorithm::Blake3
         );
     }
 

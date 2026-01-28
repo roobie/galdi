@@ -22,6 +22,7 @@ pub fn arbitrary_checksum_algorithm() -> impl Strategy<Value = ChecksumAlgorithm
     prop_oneof![
         Just(ChecksumAlgorithm::XXH3_64),
         Just(ChecksumAlgorithm::Sha256),
+        Just(ChecksumAlgorithm::Blake3),
     ]
 }
 
@@ -32,6 +33,10 @@ fn format_checksum(algo: ChecksumAlgorithm, value: u64) -> String {
         ChecksumAlgorithm::Sha256 => {
             // Generate a fake but valid-looking SHA256
             format!("sha256:{:064x}", value as u128 * 0xdeadbeef)
+        }
+        ChecksumAlgorithm::Blake3 => {
+            // Generate a fake but valid-looking Blake3
+            format!("blake3:{:064x}", value as u128 * 0xcafebabe)
         }
     }
 }

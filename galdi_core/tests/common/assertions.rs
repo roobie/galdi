@@ -77,6 +77,27 @@ pub fn assert_checksum_format(checksum: &str, algo: ChecksumAlgorithm) {
                 "SHA256 hex should be lowercase"
             );
         }
+        ChecksumAlgorithm::Blake3 => {
+            assert!(
+                checksum.starts_with("blake3:"),
+                "Blake3 checksum should start with 'blake3:'"
+            );
+            let hex_part = &checksum[7..];
+            assert_eq!(
+                hex_part.len(),
+                64,
+                "Blake3 hex part should be 64 characters, got {}",
+                hex_part.len()
+            );
+            assert!(
+                hex_part.chars().all(|c| c.is_ascii_hexdigit()),
+                "Blake3 hex part should contain only hex digits"
+            );
+            assert!(
+                hex_part.chars().all(|c| !c.is_uppercase()),
+                "Blake3 hex should be lowercase"
+            );
+        }
     }
 }
 

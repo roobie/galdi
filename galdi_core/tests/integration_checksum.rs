@@ -2,7 +2,7 @@
 mod common;
 
 use common::*;
-use galdi_core::{ChecksumAlgorithm, GaldiHasher, Sha256Hasher, XXH3_64Hasher};
+use galdi_core::{Blake3Hasher, ChecksumAlgorithm, GaldiHasher, Sha256Hasher, XXH3_64Hasher};
 use proptest::prelude::*;
 
 #[test]
@@ -19,6 +19,10 @@ fn test_hash_small_file() {
     let sha256_hasher = Sha256Hasher;
     let sha256_result = sha256_hasher.hash_file(&file_path).unwrap();
     assert_checksum_format(&sha256_result, ChecksumAlgorithm::Sha256);
+
+    let blake3_hasher = Blake3Hasher;
+    let blake3_result = blake3_hasher.hash_file(&file_path).unwrap();
+    assert_checksum_format(&blake3_result, ChecksumAlgorithm::Blake3);
 }
 
 #[test]
@@ -272,4 +276,70 @@ proptest! {
         let hash2 = sha256_hasher.hash_file(&file_path).unwrap();
         prop_assert_eq!(hash1, hash2);
     }
+
+    #[test]
+    fn proptest_blake3_format_always_valid(content in prop::collection::vec(any::<u8>(), 0..10000)) {
+        let temp_dir = create_test_dir();
+        let file_path = create_file_with_content(temp_dir.path(), "proptest.bin", &content);
+
+        let hasher = Blake3Hasher;
+        let result = hasher.hash_file(&file_path).unwrap();
+
+        assert_checksum_format(&result, ChecksumAlgorithm::Blake3);
+    }
+}
+
+// Blake3-specific tests
+#[test]
+fn test_blake3_determinism() {
+    let temp_dir = create_test_dir();
+    let content = b"Determinism test for Blake3";
+    let file_path = create_file_with_content(temp_dir.path(), "blake3_test.txt", content);
+
+    let hasher = Blake3Hasher;
+    let first_hash = hasher.hash_file(&file_path).unwrap();
+
+    for _ in 0..10 {
+        let hash = hasher.hash_file(&file_path).unwrap();
+        assert_eq!(
+            hash, first_hash,
+            "Blake3 hash should be deterministic across multiple runs"
+        );
+    }
+}
+
+#[test]
+fn test_blake3_vs_sha256_same_file() {
+    // Both should hash successfully but produce different results
+    let temp_dir = create_test_dir();
+    let content = b"Compare Blake3 vs SHA256";
+    let file_path = create_file_with_content(temp_dir.path(), "compare.txt", content);
+
+    let blake3_hasher = Blake3Hasher;
+    let blake3_hash = blake3_hasher.hash_file(&file_path).unwrap();
+
+    let sha256_hasher = Sha256Hasher;
+    let sha256_hash = sha256_hasher.hash_file(&file_path).unwrap();
+
+    // Different algorithms should produce different hashes
+    assert_ne!(blake3_hash, sha256_hash);
+
+    // But both should be valid format
+    assert_checksum_format(&blake3_hash, ChecksumAlgorithm::Blake3);
+    assert_checksum_format(&sha256_hash, ChecksumAlgorithm::Sha256);
+}
+
+#[test]
+fn test_blake3_empty_file() {
+    // Empty file should produce known hash
+    let temp_dir = create_test_dir();
+    let file_path = create_file_with_content(temp_dir.path(), "empty.txt", b"");
+
+    let hasher = Blake3Hasher;
+    let hash = hasher.hash_file(&file_path).unwrap();
+    assert_checksum_format(&hash, ChecksumAlgorithm::Blake3);
+    assert_eq!(
+        hash,
+        "blake3:af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262"
+    );
 }

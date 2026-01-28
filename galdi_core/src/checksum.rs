@@ -1,3 +1,4 @@
+use blake3::Hasher as Blake3Impl;
 use sha2::{Digest, Sha256};
 use std::{
     fs::File,
@@ -14,6 +15,7 @@ pub trait GaldiHasher {
 
 pub struct XXH3_64Hasher;
 pub struct Sha256Hasher;
+pub struct Blake3Hasher;
 
 impl GaldiHasher for XXH3_64Hasher {
     fn hash_file(&self, path: &Path) -> io::Result<String> {
@@ -42,10 +44,20 @@ impl GaldiHasher for Sha256Hasher {
     }
 }
 
+impl GaldiHasher for Blake3Hasher {
+    fn hash_file(&self, path: &Path) -> io::Result<String> {
+        let mut file = File::open(path)?;
+        let mut hasher = Blake3Impl::new();
+        io::copy(&mut file, &mut hasher)?;
+        Ok(format!("blake3:{}", hasher.finalize().to_hex()))
+    }
+}
+
 pub fn get_hasher(algorithm: ChecksumAlgorithm) -> Box<dyn GaldiHasher> {
     match algorithm {
         ChecksumAlgorithm::XXH3_64 => Box::new(XXH3_64Hasher),
         ChecksumAlgorithm::Sha256 => Box::new(Sha256Hasher),
+        ChecksumAlgorithm::Blake3 => Box::new(Blake3Hasher),
     }
 }
 
@@ -198,5 +210,91 @@ mod tests {
 
         let result = hasher.hash_file(temp_file.path()).unwrap();
         assert!(result.starts_with("sha256:"));
+    }
+
+    #[test]
+    fn test_blake3_format_is_64_hex_chars() {
+        let mut temp_file = NamedTempFile::new().unwrap();
+        temp_file.write_all(b"test content").unwrap();
+        temp_file.flush().unwrap();
+
+        let hasher = Blake3Hasher;
+        let result = hasher.hash_file(temp_file.path()).unwrap();
+
+        assert!(result.starts_with("blake3:"));
+
+        let hex_part = &result[7..];
+        assert_eq!(hex_part.len(), 64, "Blake3 should produce 64 hex chars");
+        assert!(hex_part.chars().all(|c| c.is_ascii_hexdigit()));
+    }
+
+    #[test]
+    fn test_blake3_has_correct_prefix() {
+        let mut temp_file = NamedTempFile::new().unwrap();
+        temp_file.write_all(b"hello").unwrap();
+        temp_file.flush().unwrap();
+
+        let hasher = Blake3Hasher;
+        let result = hasher.hash_file(temp_file.path()).unwrap();
+
+        assert!(
+            result.starts_with("blake3:"),
+            "Blake3 checksum should start with 'blake3:'"
+        );
+    }
+
+    #[test]
+    fn test_blake3_lowercase_hex() {
+        let mut temp_file = NamedTempFile::new().unwrap();
+        temp_file.write_all(b"test").unwrap();
+        temp_file.flush().unwrap();
+
+        let hasher = Blake3Hasher;
+        let result = hasher.hash_file(temp_file.path()).unwrap();
+
+        let hex_part = &result[7..];
+        assert!(hex_part.chars().all(|c| !c.is_uppercase()));
+    }
+
+    #[test]
+    fn test_empty_file_known_hash_blake3() {
+        let temp_file = NamedTempFile::new().unwrap();
+
+        let hasher = Blake3Hasher;
+        let result = hasher.hash_file(temp_file.path()).unwrap();
+
+        // Blake3 hash of empty input
+        assert_eq!(
+            result,
+            "blake3:af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262"
+        );
+    }
+
+    #[test]
+    fn test_known_content_blake3() {
+        let mut temp_file = NamedTempFile::new().unwrap();
+        temp_file.write_all(b"hello world").unwrap();
+        temp_file.flush().unwrap();
+
+        let hasher = Blake3Hasher;
+        let result = hasher.hash_file(temp_file.path()).unwrap();
+
+        // Blake3("hello world")
+        assert_eq!(
+            result,
+            "blake3:d74981efa70a0c880b8d8c1985d075dbcbf679b99a5f9914e5aaf96b831a9e24"
+        );
+    }
+
+    #[test]
+    fn test_get_hasher_blake3() {
+        let hasher = get_hasher(ChecksumAlgorithm::Blake3);
+
+        let mut temp_file = NamedTempFile::new().unwrap();
+        temp_file.write_all(b"test").unwrap();
+        temp_file.flush().unwrap();
+
+        let result = hasher.hash_file(temp_file.path()).unwrap();
+        assert!(result.starts_with("blake3:"));
     }
 }
