@@ -1,0 +1,8 @@
+[workspace]
+members = ["galdi_core", "galdi_snapshot", "galdi_diff", "galdi"]
+resolver = "2"
+
+[workspace.package]
+version = "0.3.2"
+authors = ["Björn Roberg <bjorn.roberg@gmail.com>"]
+edition = "2024"

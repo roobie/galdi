@@ -1,0 +1,100 @@
+{
+  "$plumbah": {
+    "version": "1.0",
+    "status": "ok",
+    "meta": {
+      "idempotent": true,
+      "mutates": false,
+      "safe": true,
+      "deterministic": true,
+      "plumbah_level": 2,
+      "execution_time_ms": 0,
+      "tool": "galdi_diff",
+      "tool_version": "0.1.0",
+      "timestamp": "2026-01-14T20:52:07.591395100Z"
+    }
+  },
+  "identical": false,
+  "summary": {
+    "added": 2,
+    "removed": 0,
+    "modified": 2,
+    "unchanged": 39
+  },
+  "differences": [
+    {
+      "path": "galdi_diff",
+      "change_type": "modified",
+      "changes": ["mtime"],
+      "source": {
+        "path": "galdi_diff",
+        "type": "directory",
+        "size": 0,
+        "mode": "20",
+        "mtime": "2026-01-14T20:22:01.416322100Z",
+        "checksum": null,
+        "target": null
+      },
+      "target": {
+        "path": "galdi_diff",
+        "type": "directory",
+        "size": 0,
+        "mode": "20",
+        "mtime": "2026-01-14T20:51:16.643192200Z",
+        "checksum": null,
+        "target": null
+      }
+    },
+    {
+      "path": "galdi_diff\\examples",
+      "change_type": "added",
+      "source": null,
+      "target": {
+        "path": "galdi_diff\\examples",
+        "type": "directory",
+        "size": 0,
+        "mode": "20",
+        "mtime": "2026-01-14T20:51:31.490118100Z",
+        "checksum": null,
+        "target": null
+      }
+    },
+    {
+      "path": "galdi_diff\\examples\\diff.identical.json",
+      "change_type": "added",
+      "source": null,
+      "target": {
+        "path": "galdi_diff\\examples\\diff.identical.json",
+        "type": "file",
+        "size": 487,
+        "mode": "20040",
+        "mtime": "2026-01-14T20:50:52.902871Z",
+        "checksum": "xxh3_64:d1780a7146a10213",
+        "target": null
+      }
+    },
+    {
+      "path": "justfile",
+      "change_type": "modified",
+      "changes": ["content", "mtime", "size"],
+      "source": {
+        "path": "justfile",
+        "type": "file",
+        "size": 698,
+        "mode": "40",
+        "mtime": "2026-01-14T20:50:06.834927600Z",
+        "checksum": "xxh3_64:a0babca5d01f174e",
+        "target": null
+      },
+      "target": {
+        "path": "justfile",
+        "type": "file",
+        "size": 734,
+        "mode": "40",
+        "mtime": "2026-01-14T20:52:02.901251800Z",
+        "checksum": "xxh3_64:38badab70781101e",
+        "target": null
+      }
+    }
+  ]
+}

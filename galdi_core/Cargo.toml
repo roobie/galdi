@@ -1,0 +1,20 @@
+[package]
+name = "galdi_core"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+xxhash-rust = { version = "0.8", features = ["xxh3"] }
+sha2 = "0.10"                                              # For SHA-256
+ignore = { version = "0.4.25", features = ["simd-accel"] }
+chrono = { version = "0.4", features = ["serde"] }
+thiserror = "2.0"                                          # Error handling
+num_cpus = "1.16"                                          # CPU detection for parallel scanning
+blake3 = "1.8.3"
+
+[dev-dependencies]
+tempfile = "3.24" # Temporary test directories
+proptest = "1.9"  # Property-based testing

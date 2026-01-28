@@ -1,0 +1,226 @@
+{
+  "$plumbah": {
+    "version": "1.0",
+    "status": "ok",
+    "meta": {
+      "idempotent": true,
+      "mutates": false,
+      "safe": true,
+      "deterministic": true,
+      "plumbah_level": 2,
+      "execution_time_ms": 0,
+      "tool": "galdi_diff",
+      "tool_version": "0.3.2",
+      "timestamp": "2026-01-28T00:48:39.156022890Z"
+    }
+  },
+  "identical": false,
+  "summary": {
+    "added": 3,
+    "removed": 4,
+    "modified": 4,
+    "unchanged": 53
+  },
+  "differences": [
+    {
+      "path": "",
+      "change_type": "modified",
+      "changes": [
+        "mtime"
+      ],
+      "source": {
+        "path": "",
+        "type": "directory",
+        "size": 4096,
+        "mode": "775",
+        "mtime": "2026-01-28T00:48:19.403078814Z",
+        "checksum": null,
+        "target": null
+      },
+      "target": {
+        "path": "",
+        "type": "directory",
+        "size": 4096,
+        "mode": "775",
+        "mtime": "2026-01-28T00:41:09.192041753Z",
+        "checksum": null,
+        "target": null
+      }
+    },
+    {
+      "path": "README.md",
+      "change_type": "removed",
+      "source": {
+        "path": "README.md",
+        "type": "file",
+        "size": 14700,
+        "mode": "664",
+        "mtime": "2026-01-28T00:48:19.403078814Z",
+        "checksum": "xxh3_64:f0aea9c4f8d85437",
+        "target": null
+      },
+      "target": null
+    },
+    {
+      "path": "examples",
+      "change_type": "modified",
+      "changes": [
+        "mtime"
+      ],
+      "source": {
+        "path": "examples",
+        "type": "directory",
+        "size": 4096,
+        "mode": "775",
+        "mtime": "2026-01-28T00:48:39.134688283Z",
+        "checksum": null,
+        "target": null
+      },
+      "target": {
+        "path": "examples",
+        "type": "directory",
+        "size": 4096,
+        "mode": "775",
+        "mtime": "2026-01-28T00:40:43.520402397Z",
+        "checksum": null,
+        "target": null
+      }
+    },
+    {
+      "path": "examples/diff.changes.json",
+      "change_type": "removed",
+      "source": {
+        "path": "examples/diff.changes.json",
+        "type": "file",
+        "size": 2390,
+        "mode": "664",
+        "mtime": "2026-01-28T00:24:00.934427656Z",
+        "checksum": "xxh3_64:4ca7bf1fa6953832",
+        "target": null
+      },
+      "target": null
+    },
+    {
+      "path": "examples/diff.identical.json",
+      "change_type": "removed",
+      "source": {
+        "path": "examples/diff.identical.json",
+        "type": "file",
+        "size": 487,
+        "mode": "664",
+        "mtime": "2026-01-28T00:24:00.934427656Z",
+        "checksum": "xxh3_64:d1780a7146a10213",
+        "target": null
+      },
+      "target": null
+    },
+    {
+      "path": "examples/diff.json",
+      "change_type": "removed",
+      "source": {
+        "path": "examples/diff.json",
+        "type": "file",
+        "size": 0,
+        "mode": "664",
+        "mtime": "2026-01-28T00:48:39.134688283Z",
+        "checksum": "xxh3_64:2d06800538d394c2",
+        "target": null
+      },
+      "target": null
+    },
+    {
+      "path": "examples/snapshot.json",
+      "change_type": "modified",
+      "changes": [
+        "content",
+        "mtime",
+        "size"
+      ],
+      "source": {
+        "path": "examples/snapshot.json",
+        "type": "file",
+        "size": 14126,
+        "mode": "664",
+        "mtime": "2026-01-28T00:41:10.312026018Z",
+        "checksum": "xxh3_64:41da5fb48de14e01",
+        "target": null
+      },
+      "target": {
+        "path": "examples/snapshot.json",
+        "type": "file",
+        "size": 0,
+        "mode": "664",
+        "mtime": "2026-01-28T00:41:10.300026188Z",
+        "checksum": "xxh3_64:2d06800538d394c2",
+        "target": null
+      }
+    },
+    {
+      "path": "galdi_diff",
+      "change_type": "modified",
+      "changes": [
+        "mtime"
+      ],
+      "source": {
+        "path": "galdi_diff",
+        "type": "directory",
+        "size": 4096,
+        "mode": "775",
+        "mtime": "2026-01-28T00:42:05.399252009Z",
+        "checksum": null,
+        "target": null
+      },
+      "target": {
+        "path": "galdi_diff",
+        "type": "directory",
+        "size": 4096,
+        "mode": "775",
+        "mtime": "2026-01-28T00:24:00.938427601Z",
+        "checksum": null,
+        "target": null
+      }
+    },
+    {
+      "path": "galdi_diff/examples",
+      "change_type": "added",
+      "source": null,
+      "target": {
+        "path": "galdi_diff/examples",
+        "type": "directory",
+        "size": 4096,
+        "mode": "775",
+        "mtime": "2026-01-28T00:24:00.934427656Z",
+        "checksum": null,
+        "target": null
+      }
+    },
+    {
+      "path": "galdi_diff/examples/diff.changes.json",
+      "change_type": "added",
+      "source": null,
+      "target": {
+        "path": "galdi_diff/examples/diff.changes.json",
+        "type": "file",
+        "size": 2390,
+        "mode": "664",
+        "mtime": "2026-01-28T00:24:00.934427656Z",
+        "checksum": "xxh3_64:4ca7bf1fa6953832",
+        "target": null
+      }
+    },
+    {
+      "path": "galdi_diff/examples/diff.identical.json",
+      "change_type": "added",
+      "source": null,
+      "target": {
+        "path": "galdi_diff/examples/diff.identical.json",
+        "type": "file",
+        "size": 487,
+        "mode": "664",
+        "mtime": "2026-01-28T00:24:00.934427656Z",
+        "checksum": "xxh3_64:d1780a7146a10213",
+        "target": null
+      }
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "$plumbah": {
+    "version": "1.0",
+    "status": "ok",
+    "meta": {
+      "idempotent": true,
+      "mutates": false,
+      "safe": true,
+      "deterministic": true,
+      "plumbah_level": 2,
+      "execution_time_ms": 0,
+      "tool": "galdi_diff",
+      "tool_version": "0.1.0",
+      "timestamp": "2026-01-14T20:50:52.810853300Z"
+    }
+  },
+  "identical": true,
+  "summary": {
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "unchanged": 41
+  },
+  "differences": []
+}
